@@ -1,0 +1,92 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: xx-large;
+  }
+  
+  /* Estilo del formulario */
+  form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  input[type="file"] {
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 8px;
+  }
+  
+  button {
+    background-color: #0070f3;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+  }
+  
+  button:hover {
+    background-color: #005bb5;
+  }
+  
+  /* Estilo de mensajes de error */
+  p {
+    color: #e74c3c;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  /* Estilo de imágenes */
+  img {
+    max-width: 400px;
+    border-radius: 8px;
+    display: block;
+    margin: 20px auto;
+  }
+  
+  /* Contenedor de imágenes */
+  .image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .image-container img {
+    max-width: 200px;
+    max-height: 150px;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+  }
+  

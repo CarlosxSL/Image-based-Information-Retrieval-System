@@ -8,18 +8,27 @@ import base64
 import tensorflow as tf
 from tensorflow.keras.applications.inception_v3 import InceptionV3
 from tensorflow.keras.models import Model
-from sklearn.neighbors import NearestNeighbors  # Asegúrate de importar esto si estás usando k-NN
+from sklearn.neighbors import NearestNeighbors
 
-# Cargar el modelo de características
-base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
+# Configuración del modelo y carga de datos
+def load_models_and_data():
+    # Cargar el modelo de características
+    base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
+    
+    # Limpiar memoria
+    del base_model
+    tf.keras.backend.clear_session()
+    
+    # Cargar el modelo de vecinos más cercanos y las imágenes de entrenamiento
+    model_nn = load('nearest_neighbors_model.pkl')
+    train_images_flat = np.load('train_images.npy')
+    
+    return model, model_nn, train_images_flat
 
-# Cargar el modelo de vecinos más cercanos y las imágenes de entrenamiento
-model_nn = load('nearest_neighbors_model.pkl')  # Ajusta el nombre y la ruta según corresponda
-train_images_flat = np.load('train_images.npy')  # Ajusta el nombre y la ruta según corresponda
+model, model_nn, train_images_flat = load_models_and_data()
 
 def preprocess_image(image):
-    # Convertir la imagen a RGB y redimensionar a 224x224
     image = image.convert('RGB').resize((224, 224))
     image_array = np.array(image) / 255.0
     return tf.convert_to_tensor(image_array, dtype=tf.float32)
@@ -34,7 +43,7 @@ def get_image_from_flat_array(index):
     return Image.fromarray((img_array * 255).astype(np.uint8))
 
 app = Flask(__name__)
-CORS(app)  # Permite solicitudes desde cualquier origen
+CORS(app)
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
@@ -45,16 +54,13 @@ def predict():
         image = request.files['image']
         img = Image.open(image)
 
-        # Redimensionar la imagen para mejorar el rendimiento
-        max_dimension = 1024
-        img.thumbnail((max_dimension, max_dimension))
-
         # Convertir la imagen subida a base64
         img_uploaded_base64 = image_to_base64(img)
 
         # Preprocesar la imagen
         img_preprocessed = preprocess_image(img)
-        img_preprocessed = tf.expand_dims(img_preprocessed, axis=0)
+        img_preprocessed = tf.expand_dims(img_preprocessed, axis=0)        
+
         features = model.predict(img_preprocessed).flatten().reshape(1, -1)
 
         # Predicción

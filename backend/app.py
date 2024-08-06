@@ -17,12 +17,9 @@ CORS(app)
 model = None
 model_nn = None
 collection = None
-train_features_loaded = None
-train_labels_loaded = None
-train_images_loaded = None
 
 def initialize():
-    global model, model_nn, collection, train_features_loaded, train_labels_loaded, train_images_loaded
+    global model, model_nn, collection
     # Cargar el modelo de características
     base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
     model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
@@ -33,12 +30,6 @@ def initialize():
     
     # Cargar el modelo de vecinos más cercanos
     model_nn = load('nearest_neighbors_model.pkl')
-    
-    # Cargar datos del archivo .npz
-    data = np.load('caltech101_train_features.npz')
-    train_features_loaded = data['features']
-    train_labels_loaded = data['labels']
-    train_images_loaded = data['Images']
     
     # Conectar a MongoDB
     client = MongoClient('mongodb://localhost:27017/')
@@ -79,6 +70,7 @@ def predict():
         query_features = model.predict(img_preprocessed).flatten().reshape(1, -1)
 
         distances, indices = model_nn.kneighbors(query_features, n_neighbors=10)
+        # print(indices[0])
         
         closest_images = [image_to_base64(get_image_from_db(int(index))) for index in indices[0] if get_image_from_db(int(index))]
 

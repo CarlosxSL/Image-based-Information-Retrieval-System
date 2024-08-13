@@ -18,7 +18,10 @@ El repositorio está organizado en dos carpetas principales:
 ### Comparación de Similitud
 
 - **Red Neuronal para Similitud**: Las características extraídas de las imágenes se comparan mediante una red neuronal que calcula la similitud entre ellas. Este enfoque asegura una identificación precisa y eficiente de imágenes visualmente similares dentro de la base de datos.
-
+  
+### Conjunto de Datos
+- Caltech101: Este proyecto utiliza el conjunto de datos Caltech101 para la prueba y desarrollo del sistema. Caltech101 contiene imágenes de 101 categorías distintas, lo que permite evaluar la capacidad del sistema para reconocer y comparar una amplia variedad de objetos.
+  
 ### Frontend
 
 - **Interfaz de Usuario**: Permite a los usuarios subir imágenes y visualizar los resultados de la búsqueda.

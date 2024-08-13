@@ -61,7 +61,7 @@ def predict():
     
     try:
         image = request.files['image']
-        img = Image.open(image)
+        img = Image.open(image).convert('RGB')
         img_uploaded_base64 = image_to_base64(img)
 
         img_preprocessed = preprocess_image(tf.convert_to_tensor(np.array(img)))
@@ -69,7 +69,7 @@ def predict():
 
         query_features = model.predict(img_preprocessed).flatten().reshape(1, -1)
 
-        distances, indices = model_nn.kneighbors(query_features, n_neighbors=10)
+        distances, indices = model_nn.kneighbors(query_features, n_neighbors=5)
         # print(indices[0])
         
         closest_images = [image_to_base64(get_image_from_db(int(index))) for index in indices[0] if get_image_from_db(int(index))]

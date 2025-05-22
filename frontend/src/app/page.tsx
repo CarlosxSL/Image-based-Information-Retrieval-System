@@ -3,17 +3,23 @@
 import { useState } from 'react';
 import axios from 'axios';
 import '../../public/styles.css'; // Importa el archivo CSS
+import Image from 'next/image';
 
 const HomePage = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [similarImages, setSimilarImages] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+      setUploadedImage(null); // Limpiar la imagen subida
+      setSimilarImages([]);
+      setError(null);
     }
   };
 
@@ -33,7 +39,7 @@ const HomePage = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setUploadedImage(response.data.uploaded_image);
+      setUploadedImage(`data:image/png;base64,${response.data.uploaded_image}`);
       setSimilarImages(response.data.closest_images);
       setError(null);
     } catch (error) {
@@ -61,10 +67,16 @@ const HomePage = () => {
 
       {error && <p>{error}</p>}
 
-      {uploadedImage && (
+      {(previewImage || uploadedImage) && (
         <div>
-          <h2>Imagen Subida:</h2>
-          <img src={`data:image/png;base64,${uploadedImage}`} alt="Imagen Subida" />
+          <h2>{uploadedImage ? "Imagen Procesada" : "Vista Previa"}:</h2>
+          <Image
+            src={uploadedImage || previewImage || ""}
+            alt={uploadedImage ? "Imagen Procesada" : "Vista Previa"}
+            width={500}
+            height={500}
+            style={{ maxWidth: '100%', height: 'auto', maxHeight: '500px' }}
+          />        
         </div>
       )}
 
@@ -73,7 +85,15 @@ const HomePage = () => {
           <h2>Imágenes Más Cercanas:</h2>
           <div className="image-container">
             {similarImages.map((img, index) => (
-              <img key={index} src={`data:image/png;base64,${img}`} alt={`Imagen Encontrada ${index}`} />
+              <Image
+                key={index}
+                src={`data:image/png;base64,${img}`}
+                alt={`Imagen Encontrada ${index}`}
+                width={200}
+                height={200}
+                style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
+                unoptimized
+              />
             ))}
           </div>
         </div>

@@ -1,3 +1,4 @@
+![Demo](demo.gif)
 # Image Based Information Retrieval System
 
 Este proyecto es un motor de búsqueda que permite a los usuarios realizar consultas utilizando imágenes en lugar de texto. El sistema es capaz de encontrar imágenes similares dentro de una base de datos dada, aprovechando modelos de aprendizaje profundo para la extracción de características y la comparación de similitud.
